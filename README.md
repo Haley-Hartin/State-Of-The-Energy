@@ -1,2 +1,5 @@
 # State-Of-The-Energy
-An analysis of the relationship between American States and their energy consumption 
+Data Mining Semester Project
+Haley Hartin, Jojo Yang, Edward Alder, Kevin Luth
+
+An analysis of the relationship between various factors of American States and their energy consumption.
