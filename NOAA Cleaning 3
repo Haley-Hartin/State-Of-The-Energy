@@ -1,0 +1,32 @@
+"""
+Created on Wed Nov  3 16:31:28 2021
+
+@author: Jojo
+"""
+import pandas as pd
+
+#Cleaning 3
+#This code actually sorts the stations together for a state
+
+States = pd.read_csv('C:/Users/Jojo/Documents/State Abb.csv',index_col=None)
+# Order is from Cleaning 2.5
+order = pd.read_csv('C:/Users/Jojo/Documents/Order.csv',index_col='Abbr')
+
+# Doing this state by state
+
+for ab in States.Abbr:
+    #empty DF for combining and also resets for the next iteration
+    cube = pd.DataFrame()
+    
+    #Next line drops the irrelevant states and keeps the normal ones
+    ListStations = order.loc[ab]
+    
+    # this next part is to read the relevant stations to the state and combine the dataset
+    for StationName in ListStations:
+        # this next part is to automate the file reading based on the list created above
+        df = pd.read_csv('C:/Users/Jojo/Documents/Test/Sum'+StationName+'.csv',index_col = None)
+        cube = pd.concat([cube,df],axis=0)
+        
+    #prints the final csv for the state
+    #also the column containing the year is unnamed, we will have to rename it later or now.
+    cube.to_csv(ab + '.csv')
