@@ -1,0 +1,115 @@
+---
+title: "Data Mining Project"
+author: "Kevin Luth"
+date: "11/3/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readxl)
+library(ggplot2)
+```
+
+## Initial Data Exploration
+
+* We theorized that population is likely to have a strong positive relationship on a state's consumption (can be seen in the line plot comparing population and consumption). To confirm this, we fit a linear regression model using these variables and confirmed that population does indeed strongly affect consumption in a positive manner. The R^2 value of the model is high at 0.78, meaning 78% of a state's consumption variance can be explained by its population. This discovery means that in order to be able to uncover the true effects of other variables on consumption, we likely will need to normalize them for population.
+* 
+
+```{r}
+#Consumption Data
+energy_consump = read_xlsx("energy_consumption_by_state.xlsx", sheet = 2, skip = 2)
+any(is.na(energy_consump)) #checks for missing values
+ec = energy_consump %>% pivot_longer(c(`1960`:`2019`), names_to = "year", values_to = "consumption") #turns year headers into a column/variable
+
+#Isolates US totals
+us_ec = energy_consump %>% 
+  pivot_longer(c(`1960`:`2019`), names_to = "year", values_to = "consumption") %>% 
+  filter(State == "US")
+
+#Removes us from states data
+ec = ec[!(ec$State == "US"),]
+
+plot(us_ec$year, us_ec$consumption, type = "l", main = "US Consumption") #Shows overall consumption trend in US
+
+#Population Data
+state_population = read_csv("total_population.csv")
+state_population = state_population %>% select(1:61)
+any(is.na(state_population)) #checks for missing values
+spop = state_population %>% pivot_longer(c(`1960`:`2019`), names_to = "year", values_to = "population")
+
+us_pop = state_population %>% 
+  pivot_longer(c(`1960`:`2019`), names_to = "year", values_to = "population") %>% 
+  filter(State == "US")
+#Removes us from states data
+spop = spop[!(spop$State == "US"),]
+
+plot(us_pop$year, us_pop$population, type = "l", main = "US Population") #Shows overall population trend in US
+
+#Integrating Energy and population data
+key_data = ec %>% inner_join(spop, by = c("State", "year"))
+us_key_data = us_ec %>% inner_join(us_pop, by = c("State", "year"))
+key_data = mutate(key_data, cons_per_pop = consumption / population)
+us_key_data = mutate(us_key_data, cons_per_pop = consumption / population)
+
+#Regress on population
+#pop_fit = lm(consumption~population, key_data[key_data$State == "AK",]) #by indiv state
+pop_fit = lm(consumption~population, key_data)
+#pop_fit = lm(consumption~population, us_key_data)
+#plot(us_key_data$population, us_key_data$consumption)
+#abline(pop_fit)
+summary(pop_fit)
+#plot(pop_fit) #diagnostic plots
+```
+
+* The following plot shows the trend of the population-adjusted energy consumption values over time. As can be seen, there is not a consistent, clear incline or decline overall in the values, but yet the short-term trends fluctuate a lot. This result tells us that there are other factors out there that affect energy consumption totals beside just population.
+
+```{r}
+plot(us_key_data$year, us_key_data$cons_per_pop, type = "l", main = "US Consumption Per Population") #Shows overall normalized trend in US
+
+#Practice with ggplot
+#ggplot(us_key_data) +
+#  geom_line(mapping = aes(year, cons_per_pop, group = 1))
+```
+
+## GDP Analysis
+
+* According to the scatter plot of total consumption vs total gdp, there could be a positive relationship between the two. Performing a linear regression using these variables further supports this claim, as its R^2 value is relatively high at 0.7. However, upon viewing the model's diagnostic plots, it appears as though it does not satisfy all the proper assumptions for a good linear model. A possible explanation for this behavior is that by taking the total values of both variables, we are allowing the effect that population has on both to appear in our model. To account for this confounding variable, we normalize both consumption and gdp and then plot another scatter plot and fit a linear regression using these new variable values. Now it is evident in both the plot and the regression model that there is not much of a relationship between gdp and consumption. The plot shows no visual trend and the model has a very low R^2 value (0.002), indicating that a state's gdp per capita does not explain hardly any of the variance in its consumption per population.
+
+```{r}
+gdp = read_xlsx("energy_consumption_by_state.xlsx", sheet = 3, skip = 2)
+gdp = gdp %>% select(-c(2:38))
+any(is.na(gdp)) #checks for missing values
+
+#Isolates US totals
+us_gdp = gdp %>% 
+  pivot_longer(c(`1997`:`2019`), names_to = "year", values_to = "gdp") %>% 
+  filter(State == "US")
+
+#Removes us from states data
+gdp = gdp[!(gdp$State == "US"),]
+
+gdp = gdp %>% pivot_longer(c(`1997`:`2019`), names_to = "year", values_to = "gdp") #turns year headers into a column/variable
+
+#Merge GDP and key_data
+gdp_data = gdp %>% inner_join(key_data, by = c("State", "year"))
+gdp_data = mutate(gdp_data, gdp_per_cap = gdp / population)
+
+us_gdp_data = us_gdp %>% inner_join(us_key_data, by = c("State", "year"))
+us_gdp_data = mutate(us_gdp_data, gdp_per_cap = gdp / population)
+
+#GDP Regression
+plot(gdp_data$gdp, gdp_data$consumption, xlim = c(0, 1000000), ylim = c(0, 6.0e+06), main = "Gross Values with GDP")
+plot(gdp_data$gdp_per_cap, gdp_data$cons_per_pop, xlim = c(30, 85), main = "Normalized Scatter Plot with GDP")
+#plot(gdp_data$gdp_per_cap, gdp_data$consumption, xlim = c(25, 85), ylim = c(0, 5e+06))
+gdp_fit = lm(consumption~gdp, gdp_data) #non-normalized fit
+summary(gdp_fit)$r.squared #r-sq for non-normalized
+gdp_fit = lm(cons_per_pop~gdp_per_cap, gdp_data) #normalized fit
+summary(gdp_fit)$r.squared #r-sq for normalized
+summary(gdp_fit)
+#plot(gdp_fit) Diagnostic plots
+```
+
+
+
