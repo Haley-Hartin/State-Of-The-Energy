@@ -47,7 +47,7 @@ Useful codes:
 
 """
 
-path = "C:\\Users\\Jojo\\Documents\\Test"
+path = "Data/NOAA Aggregate"
 files = glob.glob(path + "/*.csv")
 
 final = pd.DataFrame()
@@ -73,27 +73,27 @@ for file in files:
 
 
 # If this is causing an error, then delete/comment out from here:
-clvl2 = ['RAIN', 'RAIN', 'RAIN', 'SNOW', 'SNOW', 'SNOW', 'SNOW', 'RAIN', 'RAIN',
-       'SNOW', 'FOG', 'RAIN', 'WIND', 'TEMP', 'TEMP', 'TEMP', 'TEMP', 'TEMP',
-       'TEMP', 'TEMP', 'TEMP', 'TEMP', 'RAIN', 'HDSD', 'TEMP', 'TEMP', 'TEMP',
-       'TEMP', 'TEMP', 'TEMP', 'WIND', 'WIND', 'WIND', 'SOIL', 'SOIL', 'SOIL',
-       'FOG', 'SUN', 'WIND', 'WIND', 'WIND', 'WIND', 'SUN', 'SOIL', 'SOIL',
-       'SOIL', 'SOIL', 'SOIL', 'SOIL', 'SOIL', 'SOIL', 'SOIL', 'SOIL', 'SOIL',
-       'SOIL', 'SOIL', 'SOIL', 'SOIL', 'SOIL', 'SOIL', 'SOIL', 'SOIL', 'SOIL',
-       'SOIL', 'WIND', 'WIND', 'WIND', 'WIND']
+# clvl2 = ['RAIN', 'RAIN', 'RAIN', 'SNOW', 'SNOW', 'SNOW', 'SNOW', 'RAIN', 'RAIN',
+#        'SNOW', 'FOG', 'RAIN', 'WIND', 'TEMP', 'TEMP', 'TEMP', 'TEMP', 'TEMP',
+#        'TEMP', 'TEMP', 'TEMP', 'TEMP', 'RAIN', 'HDSD', 'TEMP', 'TEMP', 'TEMP',
+#        'TEMP', 'TEMP', 'TEMP', 'WIND', 'WIND', 'WIND', 'SOIL', 'SOIL', 'SOIL',
+#        'FOG', 'SUN', 'WIND', 'WIND', 'WIND', 'WIND', 'SUN', 'SOIL', 'SOIL',
+#        'SOIL', 'SOIL', 'SOIL', 'SOIL', 'SOIL', 'SOIL', 'SOIL', 'SOIL', 'SOIL',
+#        'SOIL', 'SOIL', 'SOIL', 'SOIL', 'SOIL', 'SOIL', 'SOIL', 'SOIL', 'SOIL',
+#        'SOIL', 'WIND', 'WIND', 'WIND', 'WIND']
 
-clvl1 = final.columns
-final=final.transpose()
-final = final.assign(l1='GROUP').set_index('l1', append=True)
-final.index=[clvl1,clvl2]
-final.index.names = ['ATTR','GROUP']
-final = final.swaplevel('ATTR','GROUP')
-final=final.transpose()
+# clvl1 = final.columns
+# final=final.transpose()
+# final = final.assign(l1='GROUP').set_index('l1', append=True)
+# final.index=[clvl1,clvl2]
+# final.index.names = ['ATTR','GROUP']
+# final = final.swaplevel('ATTR','GROUP')
+# final=final.transpose()
 # To here
 
 final.index.names = ['YEAR','STATE']
 final = final.swaplevel('STATE','YEAR')
-final.to_csv('final' + '.csv')
+final.to_csv('Data/NOAA Final/final' + '.csv')
 """
 df2 = pd.read_csv('C:/Users/Jojo/Downloads/AL Aggregate.csv')
 df2 = df2.drop(df2.columns[0],axis=1)
