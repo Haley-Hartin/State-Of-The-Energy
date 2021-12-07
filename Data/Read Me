@@ -1,0 +1,24 @@
+Discription for everything in this folder:
+Location of the datasets used and cleaned for the project
+
+  NOAA Aggregate:
+    NOAA Final - One final csv that contains all the climate data for every state with multileveled indices and columns. Multilevel so that it would be easy to grab an       attribute and turn it in to a Series for data analysis
+
+    CSV files - Yearly climate data summarized data for a state.
+
+  NOAA Cleaned:
+    CSV files - Yearly climate data summarized data for each station in a state.
+
+  Cleaned:
+    Excel - Excel spreadsheet of the corrected CO2 data
+    
+    CSV - 
+  
+  Uncleaned:
+    
+
+  Order.csv - Output for identified stations during the organizating station to state step. Relates dataset and station to state for easy organization.
+
+  MISC.csv - Output for unidentified stations during the organizating station to state step.
+  
+  ProblemFiles.txt - List of stations that didn't have a name to identify the station or state. Latitude and longitude are still in the datasets so it is still possible   to identify them by state, but given the size of the list it isn't worth the time.
