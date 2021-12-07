@@ -1,0 +1,14 @@
+Discription for everything in this folder:
+Python scripts for cleaning and organizing the NOAA datasets
+
+NOAA Cleaning - Drops data before the year 1960
+
+NOAA Cleaning 2 - Drops the datasets no in the USA and summarizes the monthly data into yearly averages.
+
+NOAA Cleaning 2.5 - Creates a list to relate station to state and catch unidentified stations in another list. Creates Order.csv and MISC.csv
+
+NOAA Cleaning 3 - Actually organizes the datasets from the stations into their respective state from the list created in Cleaning 2.5.
+
+NOAA Cleaning Aggragate - Summarizes the data from all stations in a state.
+
+NOAA Cleaning Final - Combines all the dataset for each state into one CSV file. Also adds in multileveled indeices and columns to make it easier to callout an attribute to examine and/or a specific year for one or more states. 
