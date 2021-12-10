@@ -12,9 +12,9 @@ Location of the datasets used and cleaned for the project
   Cleaned:
     Excel - Excel spreadsheet of the corrected CO2 data
     
-    CSV - 
+    CSV - Data from Uncleaned taht has been averaged
   
-  Uncleaned:
+  Uncleaned: Back up of data containing missing entries
     
 
   Order.csv - Output for identified stations during the organizating station to state step. Relates dataset and station to state for easy organization.
